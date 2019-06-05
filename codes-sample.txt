@@ -1,0 +1,183 @@
+globals [
+total-generated
+female-generated
+male-generated
+fire-exit
+main-door
+
+]
+
+turtles-own [
+  costumer-type
+]
+
+breed [women woman]
+breed [men man]
+
+to setup
+  clear-all
+  
+ ask patches
+  [ set pcolor scale-color brown ((random 500) + 5000) 0 9000 ]
+  
+ask patches [ setup-room ]
+ask patches [ setup-ways ]
+
+
+ reset-ticks
+
+end
+
+to setup-room
+ask patches with [pxcor >= -6 and pxcor <= 6 and pycor <= 15 and pycor >= 10]
+    [set pcolor grey]
+ask patches with [pxcor >= -6 and pxcor <= 6 and pycor <= 9 and pycor >= 4]
+    [set pcolor grey]
+ask patches with [pxcor >= -6 and pxcor <= 6 and pycor <= 2 and pycor >= -9]
+    [set pcolor white]
+ 
+
+end
+
+to setup-ways
+  ask patches with [(pxcor = 0) and (pycor <= 4 and pycor >= 2)]
+    [set pcolor red]
+   
+ask patches with [(pxcor = 0) and (pycor <= -9 and pycor >= -10)]
+    [set pcolor black]
+ask patches with [(pxcor = 0) and (pycor = -11)]
+    [set pcolor yellow]
+
+ask patches with [(pxcor = 7) and (pycor = 10 )]
+    [set pcolor violet]
+    
+ask patches with [(pxcor = 8 ) and (pycor <= 9 and pycor >= -3  )]
+    [set pcolor violet]   
+    
+ask patches with [(pxcor = 8)  and (pycor = -4)  ]
+    [set pcolor blue] 
+    
+ask patches with [ pxcor = 8 and pycor = 10]
+    [set pcolor green]
+end
+
+
+
+
+to Go
+ ask turtles [ 
+  let target-patch min-one-of (patches in-radius 5 with [pcolor = black]) [distance myself]
+  if target-patch != nobody  [
+    move-to target-patch
+    
+  ]
+ go-exit
+]
+ ask turtles [
+  let target-patch min-one-of (patches in-radius 5 with [pcolor = red]) [distance myself]
+  if target-patch != nobody  [
+    move-to target-patch
+    
+  ]
+
+   go-exit
+]
+ 
+ 
+ ask turtles [
+  let target-patch min-one-of (patches in-radius 15 with [pcolor = violet]) [distance myself]
+  if target-patch != nobody  [
+    move-to target-patch
+    
+  ]
+
+   go-exit
+]
+ ask turtles [ if ycor = -4 [die]]
+ ask turtles [ if ycor = -11 [die]]
+ tick
+end
+
+
+to go-exit 
+  
+if  (pcolor = violet)
+  [
+    
+    set heading 180
+    fd 1
+  ]
+if  (pcolor = black)
+  [
+    
+
+    set heading 180
+    fd 1
+  ]
+  
+if  (pcolor = red)
+  [
+    
+
+    set heading 180
+    fd 1
+  ]
+  
+  if  (pcolor = yellow)
+  [
+    set main-door main-door + 1
+    
+    set heading 180
+    fd 1
+  ] 
+  if  (pcolor = blue)
+  [
+     set fire-exit fire-exit + 1
+    set heading 180
+    
+  ] 
+  
+
+
+end
+
+to setup-person
+  if Students > 0 [
+   if random 100 < 50 [generate-gender]
+  ]
+  
+  
+end 
+
+to generate-gender
+   ifelse random 2 = 0 [generate-man] [generate-woman]
+   set Students Students - 1
+   set Total-generated Total-generated + 1
+
+end
+
+to generate-man
+  set male-Generated male-Generated + 1
+  create-men 1 [
+  set shape "person"
+  set color blue
+  move-to one-of patches with [ pcolor = white ]
+  move-to one-of patches with [ pcolor = grey ]
+  set heading  90
+  set size 1.5
+ 
+  ]
+ 
+end
+
+
+to generate-woman
+  set female-Generated female-Generated + 1
+  create-women 1 [
+  set shape "person"
+  set color pink
+  move-to one-of patches with [ pcolor = white ]
+  set heading  90
+  set size 1.5
+  ]
+end
